@@ -25,7 +25,7 @@ function outputQueryResults() {
   $result = mysql_query($select_query); 
    
   //output data in a table 
-  echo "<table>\n"; 
+  echo "<table border='1' style='width:100%;border: 1px solid black;border-collapse: collapse;padding: 5px;'\n"; 
   echo "<tr>\n";
   echo "<th>Unique ID</th>\n";
   echo "<th>Username</th>\n";
