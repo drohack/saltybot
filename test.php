@@ -59,5 +59,3 @@ outputQueryResults();
 //close database connection 
 mysql_close($db) 
 ?>
-
-<?php phpinfo();?>
