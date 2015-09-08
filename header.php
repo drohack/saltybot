@@ -6,7 +6,7 @@ if(!isset($_COOKIE['uniqueID']))
 	header("Location: login.php");
 	die();
 }
-echo "</br>Unique ID: ";
-echo $_COOKIE['uniqueID'];
-echo "</br>";
+#echo "</br>Unique ID: ";
+#echo $_COOKIE['uniqueID'];
+#echo "</br>";
 ?>

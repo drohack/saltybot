@@ -50,13 +50,13 @@ function login() {
 				mysql_query($insert_query, $db) or die("Error: ".mysql_error());
 				
 				//Redirect back to test.php
-				header("Location: test.php");
+				header("Location: user.php");
 				die();
 			} else if(mysql_num_rows($unique_id_exists)!=0) {
 				echo 'Device is already registered';
 				
 				//Redirect back to test.php
-				header("Location: test.php");
+				header("Location: user.php");
 				die();
 			} else if(mysql_num_rows($user_exists)!=0) {
 				echo 'Username already exists';
