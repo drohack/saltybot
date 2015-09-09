@@ -146,6 +146,7 @@ include 'loadUserAndCurrentData.php';
 		//If the video type is "Betting" (2) then refresh the user data & fighters data every 1 second.
 		if(<?php echo $current_video_type_id; ?> == 2) {
 			// Betting time so enable bet buttons
+			document.getElementById("bet").disabled = false;
 			document.getElementById("plus_button").disabled = false;
 			document.getElementById("minus_button").disabled = false;
 			document.getElementById("bet_red_button").disabled = false;
@@ -159,6 +160,7 @@ include 'loadUserAndCurrentData.php';
 			}, 1000);
 		} else {
 			// Not betting time so disable bet buttons
+			document.getElementById("bet").disabled = true;
 			document.getElementById("plus_button").disabled = true;
 			document.getElementById("minus_button").disabled = true;
 			document.getElementById("bet_red_button").disabled = true;
@@ -173,5 +175,11 @@ include 'loadUserAndCurrentData.php';
 	} else {
 		//Error (video paused and I am off sync or end of all videos)
 		document.getElementById("wait_div").innerHTML = "Error finding video. Please refresh this page when video has resumed playing.";
+		// Not betting time so disable bet buttons
+		document.getElementById("bet").disabled = true;
+		document.getElementById("plus_button").disabled = true;
+		document.getElementById("minus_button").disabled = true;
+		document.getElementById("bet_red_button").disabled = true;
+		document.getElementById("bet_blue_button").disabled = true;
 	}
 </script>
