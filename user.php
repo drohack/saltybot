@@ -138,7 +138,7 @@ include 'loadUserAndCurrentData.php';
 	var length = <?php echo $current_length; ?>;
 	var current_time = parseInt((new Date).getTime() / 1000, 10);
 	var start_time = <?php echo $current_start_time; ?>;
-	var wait_time = ((length - (current_time - start_time)) * 1000);
+	var wait_time = ((length - (current_time - start_time)) * 1000) + 1000;
 	
 	if(wait_time > 0) {
 		setTimeout(function(){location.reload()}, wait_time);
