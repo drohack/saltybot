@@ -1,58 +1,8 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 
 <?php 
-//database server 
-define('db_server', 'localhost'); 
-
-//user, password, and database variables 
-$db_user = 'dro'; 
-$db_password = 'password';     
-$db_dbname = 'saltybet'; 
-
 include 'header.php';
-
-//connect to the database server 
-$db = mysql_connect(db_server, $db_user, $db_password); 
-if (!$db) { 
-    die('Could Not Connect: ' . mysql_error()); 
-} else {  
-	//select database name 
-	mysql_select_db($db_dbname); 
-
-	// Get user data
-	$user_query = 'SELECT uniqueId, username, saltyBucks, betAmount, betSide, odds, winRate FROM users WHERE uniqueId=\'' . $_COOKIE['uniqueID'] . '\';'; 
-	$user_result = mysql_query($user_query); 
-	
-	while ($row = mysql_fetch_array($user_result)) 
-	{
-		$uniqueId = $row['uniqueId'];
-		$username = $row['username'];
-		$saltyBucks = $row['saltyBucks'];
-		$betAmount = $row['betAmount'];
-		$betSide = $row['betSide'];
-		$odds = $row['odds'];
-		$winRate = $row['winRate'];
-	}
-	
-	// Get current video data
-	$current_video_query = 'SELECT video_id, file_name, video_type_id, length, start_time, red_fighter, blue_fighter, red_odds, blue_odds  FROM current_video;'; 
-	$current_video_result = mysql_query($current_video_query); 
-	while ($row = mysql_fetch_array($current_video_result)) 
-	{
-		$current_video_id = $row['video_id'];
-		$current_file_name = $row['file_name'];
-		$current_video_type_id = $row['video_type_id'];
-		$current_length = $row['length'];
-		$current_start_time = $row['start_time'];
-		$current_red_fighter = $row['red_fighter'];
-		$current_blue_fighter = $row['blue_fighter'];
-		$current_red_odds = $row['red_odds'];
-		$current_blue_odds = $row['blue_odds'];
-	}
-}
-
-//close database connection 
-mysql_close($db);
+include 'loadUserAndCurrentData.php';
 ?>
 
 <script>
@@ -68,11 +18,13 @@ mysql_close($db);
 	}
 </script>
 
-<script>
+<script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js'></script>
+
+<script type='text/javascript'>
 	function bet(side) {
 		getRequest(
 			'bet.php?side=' + side + '&bet=' + document.getElementById("bet").value, // URL for the PHP file
-			refreshPage,  // handle successful request
+			loadData,  // handle successful request
 			drawError    // handle error
 		);
 		return false;
@@ -82,9 +34,18 @@ mysql_close($db);
 		alert('Bummer: there was an error!');
 	}
 	// handles the response, adds the html
-	function refreshPage(responseText) {
-		location.reload();
-		return true;
+	function loadData() {
+		getRequest(
+			'loadUserAndCurrentData.php', // URL for the PHP file
+			refreshInfo,  // handle successful request
+			drawError    // handle error
+		);
+		return false;
+	}
+	function refreshInfo() {
+		jQuery('#userInfo').load(document.URL +  ' #userInfo');
+		jQuery('#bettingInfo').load(document.URL +  ' #bettingInfo');
+		return false;
 	}
 	// helper function for cross-browser request object
 	function getRequest(url, success, error) {
@@ -120,10 +81,10 @@ mysql_close($db);
 	}
 </script>
 
-<p><font><strong>Logged in as: </strong><u><?php echo $username; ?></u></font></p>
+<p><font><strong>Logged in as: </strong><u><?php echo $username; ?></u></font> <input type="button" value="Refresh Page" onclick="location.reload();" style="float: right; padding: 15px 50px 15px 50px""></p>
 
 <!-- output data in a table -->
-<table border='1' style='width:100%;border: 1px solid black;border-collapse: collapse;padding: 5px;'>
+<table id="userInfo" border='1' style='width:100%;border: 1px solid black;border-collapse: collapse;padding: 5px;'>
 	<tr>
 		<th>Salty Bucks</th>
 		<th>Bet Amount</th>
@@ -142,18 +103,20 @@ mysql_close($db);
 
 </br></br>
 
-<strong>Who's Fighting</strong>
-<table border='1' style='width:100%;border: 1px solid black;border-collapse: collapse;padding: 5px;'>
+<strong>Who's Fighting</strong> <div id="wait_div"></div>
+<table id="bettingInfo" border='1' style='width:100%;border: 1px solid black;border-collapse: collapse;padding: 5px;'>
 	<tr>
 		<th colspan="2">Red / Odds</th>
 		<th colspan="2">Blue / Odds</th>
 	</tr>
 	<tr>
-		<td align="center"><?php echo $current_red_fighter; ?></td>
-		<td align="center"><?php echo $current_red_odds; ?></td>
-		<td align="center"><?php echo $current_blue_fighter; ?></td>
-		<td align="center"><?php echo $current_blue_odds; ?></td>
+		<td width="25%" align="center"><?php echo $current_red_fighter; ?></td>
+		<td width="25%" align="center"><?php echo $current_red_odds; ?></td>
+		<td width="25%" align="center"><?php echo $current_blue_fighter; ?></td>
+		<td width="25%" align="center"><?php echo $current_blue_odds; ?></td>
 	</tr>
+</table>
+<table id="bettingTable" border='1' style='width:100%;border: 1px solid black;border-collapse: collapse;padding: 5px;'>
 	<tr>
 		<td colspan="4" align="center" style="padding: 100px">
 			<button onclick="decreaseBet()" style="padding: 15px 50px 15px 50px">-</button>
@@ -164,7 +127,39 @@ mysql_close($db);
 		</td>
 	</tr>
 	<tr>
-		<td colspan="2" align="center"><input type="button" value="Bet Red" style="width:50%;" onclick="bet('Red')"/></td>
-		<td colspan="2" align="center"><input type="button" value="Bet Blue" style="width:50%;" onclick="bet('Blue')"/></td>
+		<td colspan="2" align="center"><input type="button" value="Bet Red" style="padding: 15px 50px 15px 50px" onclick="bet('Red')"/></td>
+		<td colspan="2" align="center"><input type="button" value="Bet Blue" style="padding: 15px 50px 15px 50px" onclick="bet('Blue')"/></td>
 	</tr>
 </table>
+
+<script type='text/javascript'>
+    //This is run onLoad.
+	//Take the current time minus the start time of the video and subtract that from the length of video and reload the whole page at the end of that time.
+	var length = <?php echo $current_length; ?>;
+	var current_time = parseInt((new Date).getTime() / 1000, 10);
+	var start_time = <?php echo $current_start_time; ?>;
+	var wait_time = ((length - (current_time - start_time)) * 1000);
+	
+	if(wait_time > 0) {
+		setTimeout(function(){location.reload()}, wait_time);
+		
+		//If the video type is "Betting" (2) then refresh the user data & fighters data every 1 second.
+		if(<?php echo $current_video_type_id; ?> == 2) {
+			setInterval(function(){
+				loadData();
+				current_time = parseInt((new Date).getTime() / 1000, 10);
+				time_left = (length - (current_time - start_time));
+				document.getElementById("wait_div").innerHTML = "Time left: " + time_left + " seconds";
+			}, 1000);
+		} else {
+			setInterval(function(){
+				current_time = parseInt((new Date).getTime() / 1000, 10);
+				time_left = (length - (current_time - start_time));
+				document.getElementById("wait_div").innerHTML = "Time left: " + time_left + " seconds";
+			}, 1000);
+		}
+	} else {
+		//Error (video paused and I am off sync or end of all videos)
+		document.getElementById("wait_div").innerHTML = "Error finding video. Please refresh this page when video has resumed playing.";
+	}
+</script>

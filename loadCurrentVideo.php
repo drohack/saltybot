@@ -32,7 +32,7 @@ if (!$db) {
 	}
 	
 	//save the next video data as the current video
-	$update_current_video_query = "UPDATE current_video SET start_time=" . time() . "' WHERE id=1;"; 
+	$update_current_video_query = "UPDATE current_video SET start_time=" . time() . " WHERE id=1;"; 
 	mysql_query($update_current_video_query); 
 
 	echo $current_file_name;
