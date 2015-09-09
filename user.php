@@ -119,16 +119,16 @@ include 'loadUserAndCurrentData.php';
 <table id="bettingTable" border='1' style='width:100%;border: 1px solid black;border-collapse: collapse;padding: 5px;'>
 	<tr>
 		<td colspan="4" align="center" style="padding: 100px">
-			<button onclick="decreaseBet()" style="padding: 15px 50px 15px 50px">-</button>
+			<button id="plus_button" onclick="decreaseBet()" style="padding: 15px 50px 15px 50px">-</button>
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 			<input type="number" id="bet" value=5 style="width:150px;">
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-			<button onclick="increaseBet()" style="padding: 15px 50px 15px 50px">+</button>
+			<button id="minus_button" onclick="increaseBet()" style="padding: 15px 50px 15px 50px">+</button>
 		</td>
 	</tr>
 	<tr>
-		<td colspan="2" align="center"><input type="button" value="Bet Red" style="padding: 15px 50px 15px 50px" onclick="bet('Red')"/></td>
-		<td colspan="2" align="center"><input type="button" value="Bet Blue" style="padding: 15px 50px 15px 50px" onclick="bet('Blue')"/></td>
+		<td colspan="2" align="center"><input id="bet_red_button" type="button" value="Bet Red" style="padding: 15px 50px 15px 50px" onclick="bet('Red')"/></td>
+		<td colspan="2" align="center"><input id="bet_blue_button" type="button" value="Bet Blue" style="padding: 15px 50px 15px 50px" onclick="bet('Blue')"/></td>
 	</tr>
 </table>
 
@@ -145,6 +145,12 @@ include 'loadUserAndCurrentData.php';
 		
 		//If the video type is "Betting" (2) then refresh the user data & fighters data every 1 second.
 		if(<?php echo $current_video_type_id; ?> == 2) {
+			// Betting time so enable bet buttons
+			document.getElementById("plus_button").disabled = false;
+			document.getElementById("minus_button").disabled = false;
+			document.getElementById("bet_red_button").disabled = false;
+			document.getElementById("bet_blue_button").disabled = false;
+			
 			setInterval(function(){
 				loadData();
 				current_time = parseInt((new Date).getTime() / 1000, 10);
@@ -152,6 +158,12 @@ include 'loadUserAndCurrentData.php';
 				document.getElementById("wait_div").innerHTML = "Time left: " + time_left + " seconds";
 			}, 1000);
 		} else {
+			// Not betting time so disable bet buttons
+			document.getElementById("plus_button").disabled = true;
+			document.getElementById("minus_button").disabled = true;
+			document.getElementById("bet_red_button").disabled = true;
+			document.getElementById("bet_blue_button").disabled = true;
+			
 			setInterval(function(){
 				current_time = parseInt((new Date).getTime() / 1000, 10);
 				time_left = (length - (current_time - start_time));
