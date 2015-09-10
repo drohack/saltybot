@@ -5,6 +5,8 @@ include 'header.php';
 include 'loadUserAndCurrentData.php';
 ?>
 
+<script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js'></script>
+
 <script>
 	function decreaseBet() {
 		if(document.getElementById("bet").value > 0) {
@@ -18,15 +20,14 @@ include 'loadUserAndCurrentData.php';
 	}
 </script>
 
-<script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js'></script>
-
 <script type='text/javascript'>
 	function bet(side) {
-		getRequest(
-			'bet.php?side=' + side + '&bet=' + document.getElementById("bet").value, // URL for the PHP file
-			loadData,  // handle successful request
-			drawError    // handle error
-		);
+		$.ajax({
+			type: 'GET',
+			url: 'bet.php?side=' + side + '&bet=' + document.getElementById("bet").value,
+			success: loadData,
+			error: drawError
+		 });
 		return false;
 	};
 	// handles drawing an error message
@@ -35,49 +36,18 @@ include 'loadUserAndCurrentData.php';
 	}
 	// handles the response, adds the html
 	function loadData() {
-		getRequest(
-			'loadUserAndCurrentData.php', // URL for the PHP file
-			refreshInfo,  // handle successful request
-			drawError    // handle error
-		);
+		$.ajax({
+			type: 'GET',
+			url: 'loadUserAndCurrentData.php',
+			success: refreshInfo,
+			error: drawError
+		 });
 		return false;
 	}
 	function refreshInfo() {
 		jQuery('#userInfo').load(document.URL +  ' #userInfo');
 		jQuery('#bettingInfo').load(document.URL +  ' #bettingInfo');
 		return false;
-	}
-	// helper function for cross-browser request object
-	function getRequest(url, success, error) {
-		var req = false;
-		try{
-			// most browsers
-			req = new XMLHttpRequest();
-		} catch (e){
-			// IE
-			try{
-				req = new ActiveXObject("Msxml2.XMLHTTP");
-			} catch(e) {
-				// try an older version
-				try{
-					req = new ActiveXObject("Microsoft.XMLHTTP");
-				} catch(e) {
-					return false;
-				}
-			}
-		}
-		if (!req) return false;
-		if (typeof success != 'function') success = function () {};
-		if (typeof error!= 'function') error = function () {};
-		req.onreadystatechange = function(){
-			if(req.readyState == 4) {
-				return req.status === 200 ? 
-					success(req.responseText) : error(req.status);
-			}
-		}
-		req.open("GET", url, true);
-		req.send(null);
-		return req;
 	}
 </script>
 
@@ -138,7 +108,7 @@ include 'loadUserAndCurrentData.php';
 	var length = <?php echo $current_length; ?>;
 	var current_time = parseInt((new Date).getTime() / 1000, 10);
 	var start_time = <?php echo $current_start_time; ?>;
-	var wait_time = ((length - (current_time - start_time)) * 1000) + 1000;
+	var wait_time = ((length - (current_time - start_time)) * 1000) + 2000;
 	
 	if(wait_time > 0) {
 		setTimeout(function(){location.reload()}, wait_time);

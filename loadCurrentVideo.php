@@ -16,7 +16,7 @@ if (!$db) {
 	mysql_select_db($db_dbname); 
 
 	//get the current playing video data
-	$current_video_query = 'SELECT video_id, file_name, video_type_id, length, red_fighter, blue_fighter, red_odds, blue_odds, winner  FROM current_video;'; 
+	$current_video_query = 'SELECT video_id, file_name, video_type_id, length, red_fighter, blue_fighter, red_odds, blue_odds, winner, last_red_fighter, last_blue_fighter, last_red_odds, last_blue_odds, last_winner  FROM current_video;'; 
 	$result = mysql_query($current_video_query); 
 	while ($row = mysql_fetch_array($result)) 
 	{
@@ -29,11 +29,12 @@ if (!$db) {
 		$current_red_odds = $row['red_odds'];
 		$current_blue_odds = $row['blue_odds'];
 		$current_winner = $row['winner'];
+		$last_red_fighter = $row['last_red_fighter'];
+		$last_blue_fighter = $row['last_blue_fighter'];
+		$last_red_odds = $row['last_red_odds'];
+		$last_blue_odds = $row['last_blue_odds'];
+		$last_winner = $row['last_winner'];
 	}
-	
-	//save the next video data as the current video
-	$update_current_video_query = "UPDATE current_video SET start_time=" . time() . " WHERE id=1;"; 
-	mysql_query($update_current_video_query); 
 
 	echo $current_file_name;
 }
