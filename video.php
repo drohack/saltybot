@@ -4,7 +4,7 @@
 	function playCurrentVideo() {
 		$.ajax({
 			type: 'GET',
-			url: 'loadCurrentVideo.php',
+			url: 'functions/loadCurrentVideo.php',
 			success: loadNextVideo,
 			error: drawError
 		 });
@@ -13,7 +13,7 @@
 	function videoEnded() {
 		$.ajax({
 			type: 'GET',
-			url: 'loadNextVideo.php',
+			url: 'functions/loadNextVideo.php',
 			success: loadNextVideo,
 			error: drawError
 		 });
@@ -31,7 +31,7 @@
 		
 		$.ajax({
 			type: 'GET',
-			url: 'updateCurrentVideoStartTime.php'
+			url: 'functions/updateCurrentVideoStartTime.php'
 		 });
 		 
 		return true;

@@ -1,7 +1,7 @@
 <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js'></script>
 <?php
 ob_start();
-include_once("loadCurrentVideo.php");
+include_once("functions/loadCurrentVideo.php");
 ob_end_clean();
 ?>
 
@@ -46,14 +46,14 @@ ob_end_clean();
 	function loadUsersData() {
 		$.ajax({
 			type: 'GET',
-			url: 'loadUsersData.php',
+			url: 'functions/loadUsersData.php',
 			success: populateUsersDataDiv,
 			error: drawError,
 			dataType: "text"
 		 });
 		 $.ajax({
 			type: 'GET',
-			url: 'loadCurrentVideo.php',
+			url: 'functions/loadCurrentVideo.php',
 			success: refreshFighterInfo,
 			error: drawError
 		 });
