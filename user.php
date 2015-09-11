@@ -2,7 +2,7 @@
 
 <?php 
 include 'header.php';
-include 'loadUserAndCurrentData.php';
+include 'functions/loadUserAndCurrentData.php';
 ?>
 
 <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js'></script>
@@ -24,7 +24,7 @@ include 'loadUserAndCurrentData.php';
 	function bet(side) {
 		$.ajax({
 			type: 'GET',
-			url: 'bet.php?side=' + side + '&bet=' + document.getElementById("bet").value,
+			url: 'functions/bet.php?side=' + side + '&bet=' + document.getElementById("bet").value,
 			success: loadData,
 			error: drawError
 		 });
@@ -38,7 +38,7 @@ include 'loadUserAndCurrentData.php';
 	function loadData() {
 		$.ajax({
 			type: 'GET',
-			url: 'loadUserAndCurrentData.php',
+			url: 'functions/loadUserAndCurrentData.php',
 			success: refreshInfo,
 			error: drawError
 		 });
