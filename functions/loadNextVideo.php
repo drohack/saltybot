@@ -39,6 +39,44 @@ if (!$db) {
 		$last_winner = $row['last_winner'];
 	}
 	
+	//Update all users that have bet with their winnings/losings (if the current video type is 2 (fighting))
+	if($current_video_type_id == 2) {
+		$all_betting_users_query = 'SELECT * FROM users WHERE betAmount IS NOT null AND betSide IS NOT null AND odds IS NOT null;';
+		$all_bets_result = mysql_query($all_betting_users_query);
+		while ($user = mysql_fetch_array($all_bets_result)) 
+		{
+			$saltyBucks = $user['saltyBucks'];
+			if($user['wins'] == "") {
+				$wins = 0;
+			} else {
+				$wins = $user['wins'];
+			}
+			if($user['gamesPlayed'] == "") {
+				$gamesPlayed = 1;
+			} else {
+				$gamesPlayed = $user['gamesPlayed'] + 1;
+			}
+			//If user bet correctly add their winnings to their account
+			//Else subtract their bet amount to their account
+			if($user['betSide'] == $current_winner) {
+				$saltyBucks = $saltyBucks + ($user['betAmount'] * $user['odds']);
+				$wins = $wins + 1;
+			} else {
+				$saltyBucks = $saltyBucks - $user['betAmount'];
+			}
+			
+			//Reset user to 10 saltyBucks if they are below the amount
+			if($saltyBucks < 10) {
+				$saltyBucks = 10;
+			}
+			
+			//Update user
+			$update_user_query = 'UPDATE users SET saltyBucks=' . $saltyBucks . ' , betAmount=null, betSide=null, odds=null, wins=' . $wins . ', gamesPlayed=' . $gamesPlayed . ' WHERE uniqueId=\'' . $user['uniqueId'] . '\';';
+			mysql_query($update_user_query); 
+		}
+	}
+	
+	
 	//get the next video data
 	$next_video_query = 'SELECT id, file_name, video_type_id, red_fighter, blue_fighter, winner, length FROM videos WHERE id=' . ($current_video_id + 1) . ';'; 
 	$result = mysql_query($next_video_query); 

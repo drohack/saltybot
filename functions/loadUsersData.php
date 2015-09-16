@@ -17,7 +17,7 @@ if (!$db) {
 
 	//run query and output results 
 	//run a select query 
-	$users_query = 'SELECT username, saltyBucks, betAmount, betSide, odds, winRate FROM users ORDER BY winRate'; 
+	$users_query = 'SELECT username, saltyBucks, betAmount, betSide, odds, wins, gamesPlayed FROM users ORDER BY (wins/IF(gamesPlayed = 0, 1, gamesPlayed)) desc'; 
 	$users_result = mysql_query($users_query); 
 
 	//output data in a table 
@@ -29,11 +29,18 @@ if (!$db) {
 	echo "<th>Bet Side</th>\n";
 	echo "<th>Odds</th>\n";
 	echo "<th>Win Rate</th>\n";
-	while ($row = mysql_fetch_row($users_result)){     
+	while ($row = mysql_fetch_array($users_result)){
+		$winRate = "";
+		if($row['wins'] != "" && $row['gamesPlayed'] != "") {
+			$winRate = $row['wins'] / $row['gamesPlayed'] * 100;
+		}
 		echo "<tr>\n"; 
-		foreach ($row as $val) { 
-			echo "<td>$val</td>\n"; 
-		} 
+			echo "<td>" . $row['username'] . "</td>\n"; 
+			echo "<td>" . $row['saltyBucks'] . "</td>\n"; 
+			echo "<td>" . $row['betAmount'] . "</td>\n"; 
+			echo "<td>" . $row['betSide'] . "</td>\n"; 
+			echo "<td>" . $row['odds'] . "</td>\n"; 
+			echo "<td>" . round($winRate, 2) . "%</td>\n"; 
 		echo "</tr>\n"; 
 	} 
 	echo '</table>';

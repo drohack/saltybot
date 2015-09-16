@@ -1,3 +1,4 @@
+<html>
 <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js'></script>
 <?php
 ob_start();
@@ -6,7 +7,11 @@ ob_end_clean();
 ?>
 
 <script type='text/javascript'>
+	var fighterIntervalId;
+	
 	function playCurrentVideo() {
+		//Stop refreshing the fighter info
+		clearInterval(fighterIntervalId);
 		$.ajax({
 			type: 'GET',
 			url: 'functions/loadCurrentVideo.php',
@@ -16,6 +21,7 @@ ob_end_clean();
 		return false;
 	};
 	function videoEnded() {
+		clearInterval(fighterIntervalId);
 		$.ajax({
 			type: 'GET',
 			url: 'functions/loadNextVideo.php',
@@ -36,7 +42,9 @@ ob_end_clean();
 		
 		$.ajax({
 			type: 'GET',
-			url: 'functions/updateCurrentVideoStartTime.php'
+			url: 'functions/updateCurrentVideoStartTime.php',
+			success: startFighterInterval,
+			error: drawError
 		 });
 		 
 		return true;
@@ -73,17 +81,31 @@ ob_end_clean();
 </div>
 
 <script text="text/javascript">
-	setInterval(function(){
-		$.ajax({
-			type: 'GET',
-			url: 'functions/loadCurrentVideo.php',
-			success: refreshFighterInfo,
-			error: drawError
-		 });
-	}, 1000);
+	function startFighterInterval() {
+		if(<?php echo $current_video_id; ?> == 2) {
+			fighterIntervalId = setInterval(function(){
+				$.ajax({
+					type: 'GET',
+					url: 'functions/loadCurrentVideo.php',
+					success: refreshFighterInfo,
+					error: drawError
+				 });
+			}, 1000);
+		} else {
+			$.ajax({
+				type: 'GET',
+				url: 'functions/loadCurrentVideo.php',
+				success: refreshFighterInfo,
+				error: drawError
+			 });
+		}
+	}
 	
 	function refreshFighterInfo() {
 		jQuery('#currentFighterInfo').load(document.URL +  ' #currentFighterInfo');
 		return false;
 	}
+	
+	startFighterInterval();
 </script>
+</html>

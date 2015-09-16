@@ -1,3 +1,4 @@
+<html>
 <link rel="stylesheet" href="style.css" type="text/css">
 
 <?php 
@@ -7,7 +8,7 @@ include 'functions/loadUserAndCurrentData.php';
 
 <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js'></script>
 
-<script>
+<script type='text/javascript'>
 	function decreaseBet() {
 		if(document.getElementById("bet").value > 0) {
 			document.getElementById("bet").stepDown(1);
@@ -66,7 +67,7 @@ include 'functions/loadUserAndCurrentData.php';
 	}
 </script>
 
-<p><font><strong>Logged in as: </strong><u><?php echo $username; ?></u></font> <input type="button" value="Refresh Page" onclick="location.reload();" style="float: right; padding: 15px 50px 15px 50px""></p>
+<p><font><strong>Logged in as: </strong><u><?php echo $username; ?></u></font> <input type="button" value="Refresh Page" onclick="location.reload();" style="float: right; padding: 15px 50px 15px 50px"></p>
 
 <!-- output data in a table -->
 <table id="userInfo" border='1' style='width:100%;border: 1px solid black;border-collapse: collapse;padding: 5px;'>
@@ -82,7 +83,7 @@ include 'functions/loadUserAndCurrentData.php';
 		<td width="20%" align="center"><?php echo $betAmount; ?></td>
 		<td width="20%" align="center"><?php echo $betSide; ?></td>
 		<td width="20%" align="center"><?php echo $odds; ?>x ($<?php echo $payout; ?>)</td>
-		<td width="20%" align="center"><?php echo $winRate; ?></td>
+		<td width="20%" align="center"><?php echo $winRate; ?>%</td>
 	</tr>
 </table>
 
@@ -101,6 +102,7 @@ include 'functions/loadUserAndCurrentData.php';
 		<td width="25%" align="center"><?php echo $current_blue_odds; ?><span id="bluePayout"/></td>
 	</tr>
 </table>
+
 <table id="bettingTable" border='1' style='width:100%;border: 1px solid black;border-collapse: collapse;padding: 5px;'>
 	<tr>
 		<td colspan="4" align="center" style="padding: 100px">
@@ -128,11 +130,12 @@ include 'functions/loadUserAndCurrentData.php';
 	if(wait_time > 0) {
 		// Refresh the whole page after the wait_time
 		setTimeout(function(){location.reload()}, wait_time);
-			
+	
 		//If the video type is "Betting" (2) then refresh the user data & fighters data every 1 second.
 		if(<?php echo $current_video_type_id; ?> == 1) {
+			
 			// Betting time so enable bet buttons (if not already bet)
-			if(<?php echo $betAmount; ?> == "") {
+			if("<?php echo $betAmount; ?>" == "") {
 				document.getElementById("bet").disabled = false;
 				document.getElementById("plus_button").disabled = false;
 				document.getElementById("minus_button").disabled = false;
@@ -145,7 +148,7 @@ include 'functions/loadUserAndCurrentData.php';
 				document.getElementById("bet_red_button").disabled = true;
 				document.getElementById("bet_blue_button").disabled = true;
 			}
-			
+
 			setInterval(function(){
 				loadData();
 				current_time = parseInt((new Date).getTime() / 1000, 10);
@@ -177,3 +180,4 @@ include 'functions/loadUserAndCurrentData.php';
 		document.getElementById("bet_blue_button").disabled = true;
 	}
 </script>
+</html>

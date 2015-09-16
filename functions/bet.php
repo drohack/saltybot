@@ -16,7 +16,7 @@ if (!$db) {
 	mysql_select_db($db_dbname); 
 
 	// Get user data
-	$user_query = 'SELECT uniqueId, username, saltyBucks, betAmount, betSide, odds, winRate FROM users WHERE uniqueId=\'' . $_COOKIE['uniqueID'] . '\';'; 
+	$user_query = 'SELECT uniqueId, username, saltyBucks, betAmount, betSide, odds, wins, gamesPlayed FROM users WHERE uniqueId=\'' . $_COOKIE['uniqueID'] . '\';'; 
 	$user_result = mysql_query($user_query); 
 	
 	while ($row = mysql_fetch_array($user_result)) 
@@ -27,7 +27,8 @@ if (!$db) {
 		$betAmount = $row['betAmount'];
 		$betSide = $row['betSide'];
 		$odds = $row['odds'];
-		$winRate = $row['winRate'];
+		$wins = $row['wins'];
+		$gamesPlayed = $row['gamesPlayed'];
 	}
 	
 	// Check to see if user is betting within their means
