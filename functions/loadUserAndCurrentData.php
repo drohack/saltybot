@@ -28,6 +28,10 @@ if (!$db) {
 		$betSide = $row['betSide'];
 		$odds = $row['odds'];
 		$winRate = $row['winRate'];
+		
+		if($betAmount != "" && $odds != null) {
+			$payout = $betAmount * $odds;
+		}
 	}
 	
 	// Get current video data

@@ -71,9 +71,9 @@ ob_end_clean();
 	function refreshFighterInfo() {
 		jQuery('#currentFighterInfo').load(document.URL +  ' #currentFighterInfo');
 		jQuery('#lastFighterInfo').load(document.URL +  ' #lastFighterInfo', function(){
-			var last_winner = " <?php echo $last_winner ?> ";
-			var last_red_fighter = " <?php echo $last_red_fighter ?> ";
-			var last_blue_fighter = " <?php echo $last_blue_fighter ?> ";
+			var last_winner = "<?php echo $last_winner ?>";
+			var last_red_fighter = "<?php echo $last_red_fighter ?>";
+			var last_blue_fighter = "<?php echo $last_blue_fighter ?>";
 			//alert("test: " + last_winner + ":" + last_red_fighter);
 			if(last_winner != "" && last_red_fighter != "" && last_winner == last_red_fighter) {
 				document.getElementById("last_red_header").innerHTML = "Red / Odds - WINNER";

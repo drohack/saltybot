@@ -49,16 +49,15 @@ if (!$db) {
 		}
 		
 		// Check to see if it is currently a betting time
-		if($current_video_type_id == 2) {
+		if($current_video_type_id == 1) {
 			//save the bet
-			if($_GET['side'] == "red" || $_GET['side'] == "Red") {
+			if($_GET['fighter'] == $current_red_fighter) {
 				$odds = $current_red_odds / $current_blue_odds;
-				$side = "Red";
 			} else {
 				$odds = $current_blue_odds / $current_red_odds;
-				$side = "Blue";
+				
 			}
-			$update_bet_query = "UPDATE users SET betAmount=" . $_GET['bet'] . ", betSide='" . $side . "', odds=" . $odds . " WHERE uniqueId='" . $_COOKIE['uniqueID'] . "';"; 
+			$update_bet_query = "UPDATE users SET betAmount=" . $_GET['bet'] . ", betSide='" . $_GET['fighter'] . "', odds=" . $odds . " WHERE uniqueId='" . $_COOKIE['uniqueID'] . "';"; 
 			mysql_query($update_bet_query);
 		}
 	}
