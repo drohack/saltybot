@@ -16,9 +16,9 @@ ob_end_clean();
 	</tr>
 	<tr>
 		<td width="25%" align="center"><?php echo $current_red_fighter; ?></td>
-		<td width="25%" align="center"><?php echo $current_red_odds; ?></td>
+		<td width="25%" align="center"><?php echo number_format($current_red_odds,2); ?></td>
 		<td width="25%" align="center"><?php echo $current_blue_fighter; ?></td>
-		<td width="25%" align="center"><?php echo $current_blue_odds; ?></td>
+		<td width="25%" align="center"><?php echo number_format($current_blue_odds,2); ?></td>
 	</tr>
 </table>
 </br>
@@ -32,18 +32,20 @@ ob_end_clean();
 	</tr>
 	<tr>
 		<td width="25%" align="center"><?php echo $last_red_fighter; ?></td>
-		<td width="25%" align="center"><?php echo $last_red_odds; ?></td>
+		<td width="25%" align="center"><?php echo number_format($last_red_odds,2); ?></td>
 		<td width="25%" align="center"><?php echo $last_blue_fighter; ?></td>
-		<td width="25%" align="center"><?php echo $last_blue_odds; ?></td>
+		<td width="25%" align="center"><?php echo number_format($last_blue_odds,2); ?></td>
 	</tr>
 </table>
 </br>
 <div id="usersDataDiv"/>
 
 <script type='text/javascript'>
-	setInterval(function(){
-		loadUsersData();
-	}, 1000);
+	function start() {
+		setTimeout(function(){
+			loadUsersData();
+		}, 1000);
+	}
 	function loadUsersData() {
 		$.ajax({
 			type: 'GET',
@@ -82,7 +84,10 @@ ob_end_clean();
 				document.getElementById("last_blue_header").innerHTML = "Blue / Odds - WINNER";
 			}
 		});
+		start();
 		return false;
 	}
+	
+	start();
 </script>
 </html>

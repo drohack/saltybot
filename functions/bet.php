@@ -34,7 +34,7 @@ if (!$db) {
 	// Check to see if user is betting within their means
 	if($_GET['bet'] > 0 && $_GET['bet'] <= $saltyBucks) {
 		// Get current video data
-		$current_video_query = 'SELECT video_id, file_name, video_type_id, length, start_time, red_fighter, blue_fighter, red_odds, blue_odds FROM current_video;'; 
+		$current_video_query = 'SELECT video_id, file_name, video_type_id, length, start_time, red_fighter, blue_fighter, red_bet, blue_bet, red_odds, blue_odds FROM current_video;'; 
 		$current_video_result = mysql_query($current_video_query); 
 		while ($row = mysql_fetch_array($current_video_result)) 
 		{
@@ -45,6 +45,8 @@ if (!$db) {
 			$current_start_time = $row['start_time'];
 			$current_red_fighter = $row['red_fighter'];
 			$current_blue_fighter = $row['blue_fighter'];
+			$current_red_bet = $row['red_bet'];
+			$current_blue_bet = $row['blue_bet'];
 			$current_red_odds = $row['red_odds'];
 			$current_blue_odds = $row['blue_odds'];
 		}
@@ -56,10 +58,18 @@ if (!$db) {
 				$odds = $current_red_odds / $current_blue_odds;
 			} else {
 				$odds = $current_blue_odds / $current_red_odds;
-				
 			}
 			$update_bet_query = "UPDATE users SET betAmount=" . $_GET['bet'] . ", betSide='" . $_GET['fighter'] . "', odds=" . $odds . " WHERE uniqueId='" . $_COOKIE['uniqueID'] . "';"; 
 			mysql_query($update_bet_query);
+			
+			//Update the total bets depending on who the user voted for
+			if($_GET['fighter'] == $current_red_fighter) {
+				$update_total_bet_query = "UPDATE current_video SET red_bet=" . ($current_red_bet + $_GET['bet']) . " WHERE id=1;";
+				mysql_query($update_total_bet_query);
+			} else {
+				$update_total_bet_query = "UPDATE current_video SET blue_bet=" . ($current_blue_bet + $_GET['bet']) . " WHERE id=1;";
+				mysql_query($update_total_bet_query);
+			}
 		}
 	}
 }

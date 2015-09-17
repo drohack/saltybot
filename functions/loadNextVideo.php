@@ -19,7 +19,7 @@ if (!$db) {
 	$last_blue_odds=null;
 
 	//get the current playing video data
-	$current_video_query = 'SELECT video_id, file_name, video_type_id, length, red_fighter, blue_fighter, red_odds, blue_odds, winner, last_red_fighter, last_blue_fighter, last_red_odds, last_blue_odds, last_winner FROM current_video;'; 
+	$current_video_query = 'SELECT video_id, file_name, video_type_id, length, red_fighter, blue_fighter, red_bet, blue_bet, red_odds, blue_odds, winner, last_red_fighter, last_blue_fighter, last_red_bet, last_blue_bet, last_red_odds, last_blue_odds, last_winner FROM current_video;'; 
 	$result = mysql_query($current_video_query); 
 	while ($row = mysql_fetch_array($result)) 
 	{
@@ -29,11 +29,15 @@ if (!$db) {
 		$current_length = $row['length'];
 		$current_red_fighter = $row['red_fighter'];
 		$current_blue_fighter = $row['blue_fighter'];
+		$current_red_bet = $row['red_bet'];
+		$current_blue_bet = $row['blue_bet'];
 		$current_red_odds = $row['red_odds'];
 		$current_blue_odds = $row['blue_odds'];
 		$current_winner = $row['winner'];
 		$last_red_fighter = $row['last_red_fighter'];
 		$last_blue_fighter = $row['last_blue_fighter'];
+		$last_red_bet = $row['last_red_bet'];
+		$last_blue_bet = $row['last_blue_bet'];
 		$last_red_odds = $row['last_red_odds'];
 		$last_blue_odds = $row['last_blue_odds'];
 		$last_winner = $row['last_winner'];
@@ -90,18 +94,24 @@ if (!$db) {
 		$next_winner = $row['winner'];
 		$next_length = $row['length'];
 	}
-	
-	$red_odds = "50";
-	$blue_odds = "50";
-	
-	if($next_video_type_id == 2) {
-		$current_winner = $last_winner;
-	} else if($next_video_type_id == 3) {
-		$red_odds = "null";
-		$blue_odds = "null";
+
+	//Reset bets and odds to 1 at the start of betting
+	if($next_video_type_id == 1) {
+		$red_bet = "1";
+		$blue_bet = "1";
+		$red_odds = "1";
+		$blue_odds = "1";
+	} else {
+		$red_bet = $current_red_bet;
+		$blue_bet = $current_blue_bet;
+		$red_odds = $current_red_odds;
+		$blue_odds = $current_blue_odds;
 	}
 	
-	if($next_video_type_id != 3) {
+	//If the next video is a fight then do not update the "last fighter info". Do this by loading the current fighter info with current "last fighter info"
+	if($next_video_type_id == 2) {
+		$current_winner = $last_winner;
+
 		if($last_red_fighter != null) {
 			$current_red_fighter = $last_red_fighter;
 		} else {
@@ -112,15 +122,25 @@ if (!$db) {
 		} else {
 			$current_blue_fighter = null;
 		}
+		if($last_red_bet != null) {
+			$current_red_bet = $last_red_bet;
+		} else {
+			$current_red_bet = "null";
+		}
+		if($last_blue_bet != null) {
+			$current_blue_bet = $last_blue_bet;
+		} else {
+			$current_blue_bet = "null";
+		}
 		if($last_red_odds != null) {
 			$current_red_odds = $last_red_odds;
 		} else {
-			$current_red_odds = null;
+			$current_red_odds = "null";
 		}
 		if($last_blue_odds != null) {
 			$current_blue_odds = $last_blue_odds;
 		} else {
-			$current_blue_odds = null;
+			$current_blue_odds = "null";
 		}
 	}
 	
@@ -130,12 +150,20 @@ if (!$db) {
 	if($current_blue_odds == null) {
 		$current_blue_odds = "null";
 	}
+	if($current_red_bet == null) {
+		$current_red_bet = "null";
+	}
+	if($current_blue_bet == null) {
+		$current_blue_bet = "null";
+	}
 	
 	//save the next video data as the current video
 	$update_current_video_query = "UPDATE current_video SET video_id=" . $next_id . ", file_name='" . $next_file_name . "', video_type_id=" . $next_video_type_id . ", length=" . $next_length .
 		", start_time=" . time() .
-		", red_fighter='" . $next_red_fighter . "', blue_fighter='" . $next_blue_fighter . "', red_odds=" . $red_odds . ", blue_odds=" . $blue_odds . ", winner='" . $next_winner . "'" .
+		", red_fighter='" . $next_red_fighter . "', blue_fighter='" . $next_blue_fighter . "', red_bet=" . $red_bet . ", blue_bet=" . $blue_bet .
+		", red_odds=" . $red_odds . ", blue_odds=" . $blue_odds . ", winner='" . $next_winner . "'" .
 		", last_red_fighter='" . $current_red_fighter . "', last_blue_fighter='" . $current_blue_fighter . "'" .
+		", last_red_bet=" . $current_red_bet . ", last_blue_bet=" . $current_blue_bet .
 		", last_red_odds=" . $current_red_odds . ", last_blue_odds=" . $current_blue_odds . ", last_winner='" . $current_winner . "' WHERE id=1;"; 
 	mysql_query($update_current_video_query); 
 

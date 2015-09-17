@@ -22,16 +22,16 @@ include 'functions/loadUserAndCurrentData.php';
 		}
 	}
 	function updatePayout(){
-		var redPayout = document.getElementById("bet").value * (<?php echo $current_red_odds; ?> / <?php echo $current_blue_odds; ?>);
-		var bluePayout = document.getElementById("bet").value * (<?php echo $current_blue_odds; ?> / <?php echo $current_red_odds; ?>);
-		document.getElementById("redPayout").innerHTML = "($" + redPayout + ")";
-		document.getElementById("bluePayout").innerHTML = "($" + bluePayout + ")";
+		var redPayout = document.getElementById("bet").value * <?php echo $current_red_odds; ?>;
+		var bluePayout = document.getElementById("bet").value * <?php echo $current_blue_odds; ?>;
+		document.getElementById("redPayout").innerHTML = "($" + Math.ceil(redPayout) + ")";
+		document.getElementById("bluePayout").innerHTML = "($" + Math.ceil(bluePayout) + ")";
 	}
 </script>
 
 <script type='text/javascript'>
 	function bet(side) {
-		document.getElementById("bet").disabled = true;
+		document.getElementById("bet").readOnly = true;
 		document.getElementById("plus_button").disabled = true;
 		document.getElementById("minus_button").disabled = true;
 		document.getElementById("bet_red_button").disabled = true;
@@ -59,9 +59,10 @@ include 'functions/loadUserAndCurrentData.php';
 		return false;
 	}
 	function refreshInfo() {
-		jQuery('#userInfo').load(document.URL +  ' #userInfo');
-		jQuery('#bettingInfo').load(document.URL +  ' #bettingInfo', function(){
-			updatePayout();
+		jQuery('#userInfo').load(document.URL +  ' #userInfo', function() {
+			jQuery('#bettingInfo').load(document.URL +  ' #bettingInfo', function(){
+				updatePayout();
+			});
 		});
 		return false;
 	}
@@ -73,16 +74,16 @@ include 'functions/loadUserAndCurrentData.php';
 <table id="userInfo" border='1' style='width:100%;border: 1px solid black;border-collapse: collapse;padding: 5px;'>
 	<tr>
 		<th>Salty Bucks</th>
-		<th>Bet Amount</th>
 		<th>Bet On</th>
+		<th>Bet Amount</th>
 		<th>Odds(Payout)</th>
 		<th>Win Rate</th>
 	</tr>
 	<tr>
 		<td width="20%" align="center"><?php echo $saltyBucks; ?></td>
-		<td width="20%" align="center"><?php echo $betAmount; ?></td>
 		<td width="20%" align="center"><?php echo $betSide; ?></td>
-		<td width="20%" align="center"><?php echo $odds; ?>x ($<?php echo $payout; ?>)</td>
+		<td width="20%" align="center"><?php echo $betAmount; ?></td>
+		<td width="20%" align="center"><?php echo number_format($odds,2); ?>x ($<?php echo $payout; ?>)</td>
 		<td width="20%" align="center"><?php echo $winRate; ?>%</td>
 	</tr>
 </table>
@@ -97,9 +98,9 @@ include 'functions/loadUserAndCurrentData.php';
 	</tr>
 	<tr>
 		<td width="25%" align="center"><?php echo $current_red_fighter; ?></td>
-		<td width="25%" align="center"><?php echo $current_red_odds; ?><span id="redPayout"/></td>
+		<td width="25%" align="center"><?php echo number_format($current_red_odds,2); ?><span id="redPayout"/></td>
 		<td width="25%" align="center"><?php echo $current_blue_fighter; ?></td>
-		<td width="25%" align="center"><?php echo $current_blue_odds; ?><span id="bluePayout"/></td>
+		<td width="25%" align="center"><?php echo number_format($current_blue_odds,2); ?><span id="bluePayout"/></td>
 	</tr>
 </table>
 
@@ -136,13 +137,13 @@ include 'functions/loadUserAndCurrentData.php';
 			
 			// Betting time so enable bet buttons (if not already bet)
 			if("<?php echo $betAmount; ?>" == "") {
-				document.getElementById("bet").disabled = false;
+				document.getElementById("bet").readOnly = false;
 				document.getElementById("plus_button").disabled = false;
 				document.getElementById("minus_button").disabled = false;
 				document.getElementById("bet_red_button").disabled = false;
 				document.getElementById("bet_blue_button").disabled = false;
 			} else {
-				document.getElementById("bet").disabled = true;
+				document.getElementById("bet").readOnly = true;
 				document.getElementById("plus_button").disabled = true;
 				document.getElementById("minus_button").disabled = true;
 				document.getElementById("bet_red_button").disabled = true;
@@ -157,11 +158,12 @@ include 'functions/loadUserAndCurrentData.php';
 			}, 1000);
 		} else {
 			// Not betting time so disable bet buttons
-			document.getElementById("bet").disabled = true;
+			document.getElementById("bet").readOnly = true;
 			document.getElementById("plus_button").disabled = true;
 			document.getElementById("minus_button").disabled = true;
 			document.getElementById("bet_red_button").disabled = true;
 			document.getElementById("bet_blue_button").disabled = true;
+			updatePayout();
 			
 			setInterval(function(){
 				current_time = parseInt((new Date).getTime() / 1000, 10);
@@ -173,7 +175,7 @@ include 'functions/loadUserAndCurrentData.php';
 		//Error (video paused and I am off sync or end of all videos)
 		document.getElementById("wait_div").innerHTML = "Error finding video. Please refresh this page when video has resumed playing.";
 		// Not betting time so disable bet buttons
-		document.getElementById("bet").disabled = true;
+		document.getElementById("bet").readOnly = true;
 		document.getElementById("plus_button").disabled = true;
 		document.getElementById("minus_button").disabled = true;
 		document.getElementById("bet_red_button").disabled = true;
