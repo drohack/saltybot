@@ -37,7 +37,9 @@ include 'functions/loadUserAndCurrentData.php';
 		document.getElementById("plus_button").disabled = true;
 		document.getElementById("minus_button").disabled = true;
 		document.getElementById("bet_red_button").disabled = true;
+		document.getElementById("bet_red_button").style.color = "grey";
 		document.getElementById("bet_blue_button").disabled = true;
+		document.getElementById("bet_blue_button").style.color = "grey";
 		$.ajax({
 			type: 'GET',
 			url: 'functions/bet.php?fighter=' + side + '&bet=' + document.getElementById("bet").value,
@@ -48,7 +50,8 @@ include 'functions/loadUserAndCurrentData.php';
 	};
 	// handles drawing an error message
 	function drawError() {
-		alert('Bummer: there was an error!');
+		//alert('Bummer: there was an error!');
+		displayError();
 	}
 	// handles the response, adds the html
 	function loadData() {
@@ -82,9 +85,9 @@ include 'functions/loadUserAndCurrentData.php';
 	</tr>
 	<tr>
 		<td width="20%" align="center"><?php echo $saltyBucks; ?></td>
-		<td width="20%" align="center"><?php echo $betSide; ?></td>
+		<td width="20%" align="center"><?php if($betSide == $current_red_fighter){echo '<font color="red">' . $betSide . '</font>';}else{echo '<font color="blue">' . $betSide . '</font>';} ?></td>
 		<td width="20%" align="center"><?php echo $betAmount; ?></td>
-		<td width="20%" align="center"><?php echo number_format($odds,2); ?>x ($<?php echo $payout; ?>)</td>
+		<td width="20%" align="center"><?php echo (number_format($odds,2)+0); ?>x ($<?php echo $payout; ?>)</td>
 		<td width="20%" align="center"><?php echo $winRate; ?>%</td>
 	</tr>
 </table>
@@ -94,14 +97,21 @@ include 'functions/loadUserAndCurrentData.php';
 <strong>Who's Fighting</strong> <div id="wait_div"></div>
 <table id="bettingInfo" border='1' style='width:100%;border: 1px solid black;border-collapse: collapse;padding: 5px;'>
 	<tr>
-		<th colspan="2">Red / Odds(Payout)</th>
-		<th colspan="2">Blue / Odds(Payout)</th>
+		<th colspan="5">
+			<div style="width:50%; float:left;">
+				<font color="red">Red</font> / Odds(Payout)
+			</div>
+			<div style="width:50%; float:right;">
+				<font color="blue">Blue</font> / Odds(Payout)
+			</div>
+		</th>
 	</tr>
 	<tr>
-		<td width="25%" align="center"><?php echo $current_red_fighter; ?></td>
-		<td width="25%" align="center"><?php echo number_format($current_red_odds,2); ?><span id="redPayout"><?php if($betAmount != ""){echo '($' . ceil(($betAmount * $current_red_odds)) . ')';} ?></span></td>
-		<td width="25%" align="center"><?php echo $current_blue_fighter; ?></td>
-		<td width="25%" align="center"><?php echo number_format($current_blue_odds,2); ?><span id="bluePayout"><?php if($betAmount != ""){echo '($' . ceil(($betAmount * $current_blue_odds)) . ')';} ?></span></td>
+		<td width="20%" align="center"><?php echo $current_red_fighter; ?></td>
+		<td width="20%" align="center"><?php echo (number_format($current_red_odds,2)+0); ?><span id="redPayout"><?php if($betAmount != ""){echo '($' . ceil(($betAmount * $current_red_odds)) . ')';} ?></span></td>
+		<td width="20%" align="center"><?php if($current_red_odds > $current_blue_odds){echo '<font color="red">' . (number_format($current_red_odds/$current_blue_odds,2)+0) . '</font>:<font color="blue">1';}else {echo '<font color="red">1</font>:<font color="blue">' . (number_format($current_blue_odds/$current_red_odds,2)+0) . '</font>';} ?></td>
+		<td width="20%" align="center"><?php echo $current_blue_fighter; ?></td>
+		<td width="20%" align="center"><?php echo (number_format($current_blue_odds,2)+0); ?><span id="bluePayout"><?php if($betAmount != ""){echo '($' . ceil(($betAmount * $current_blue_odds)) . ')';} ?></span></td>
 	</tr>
 </table>
 
@@ -116,8 +126,8 @@ include 'functions/loadUserAndCurrentData.php';
 		</td>
 	</tr>
 	<tr>
-		<td colspan="2" align="center"><input id="bet_red_button" type="button" value="Bet Red" style="padding: 15px 50px 15px 50px" onclick="bet('<?php echo $current_red_fighter; ?>')"/></td>
-		<td colspan="2" align="center"><input id="bet_blue_button" type="button" value="Bet Blue" style="padding: 15px 50px 15px 50px" onclick="bet('<?php echo $current_blue_fighter; ?>')"/></td>
+		<td colspan="2" align="center"><input id="bet_red_button" type="button" value="Bet Red" style="padding: 15px 50px 15px 50px; color: red;" onclick="bet('<?php echo $current_red_fighter; ?>')"/></td>
+		<td colspan="2" align="center"><input id="bet_blue_button" type="button" value="Bet Blue" style="padding: 15px 50px 15px 50px; color: blue;" onclick="bet('<?php echo $current_blue_fighter; ?>')"/></td>
 	</tr>
 </table>
 
@@ -131,7 +141,7 @@ include 'functions/loadUserAndCurrentData.php';
 	
 	if(wait_time > 0) {
 		// Refresh the whole page after the wait_time
-		setTimeout(function(){location.reload()}, wait_time);
+		setTimeout(function(){location.reload();}, wait_time);
 	
 		//If the video type is "Betting" (2) then refresh the user data & fighters data every 1 second.
 		if(<?php echo $current_video_type_id; ?> == 1) {
@@ -142,13 +152,17 @@ include 'functions/loadUserAndCurrentData.php';
 				document.getElementById("plus_button").disabled = false;
 				document.getElementById("minus_button").disabled = false;
 				document.getElementById("bet_red_button").disabled = false;
+				document.getElementById("bet_red_button").style.color = "red";
 				document.getElementById("bet_blue_button").disabled = false;
+				document.getElementById("bet_blue_button").style.color = "blue";
 			} else {
 				document.getElementById("bet").disabled = true;
 				document.getElementById("plus_button").disabled = true;
 				document.getElementById("minus_button").disabled = true;
 				document.getElementById("bet_red_button").disabled = true;
+				document.getElementById("bet_red_button").style.color = "grey";
 				document.getElementById("bet_blue_button").disabled = true;
+				document.getElementById("bet_blue_button").style.color = "grey";
 			}
 
 			var time_elapsed = (current_time - start_time);
@@ -162,7 +176,7 @@ include 'functions/loadUserAndCurrentData.php';
 				} else {
 					count_down = count_down - 1;
 				}
-				document.getElementById("wait_div").innerHTML = "Time left: " + time_left + " seconds </br> Next odds update in: " + count_down + " seconds";
+				document.getElementById("wait_div").innerHTML = "Betting time remaining: " + time_left + " seconds </br> Next odds update in: " + count_down + " seconds";
 			}, 1000);
 		} else {
 			// Not betting time so disable bet buttons
@@ -170,7 +184,9 @@ include 'functions/loadUserAndCurrentData.php';
 			document.getElementById("plus_button").disabled = true;
 			document.getElementById("minus_button").disabled = true;
 			document.getElementById("bet_red_button").disabled = true;
+			document.getElementById("bet_red_button").style.color = "grey";
 			document.getElementById("bet_blue_button").disabled = true;
+			document.getElementById("bet_blue_button").style.color = "grey";
 			updatePayout();
 			
 			//Dont need to show how long the fight is
@@ -181,6 +197,10 @@ include 'functions/loadUserAndCurrentData.php';
 			}, 1000); */
 		}
 	} else {
+		displayError();
+	}
+	
+	function displayError() {
 		//Error (video paused and I am off sync or end of all videos)
 		document.getElementById("wait_div").innerHTML = "Error finding video. Please refresh this page when video has resumed playing.";
 		// Not betting time so disable bet buttons
@@ -188,7 +208,9 @@ include 'functions/loadUserAndCurrentData.php';
 		document.getElementById("plus_button").disabled = true;
 		document.getElementById("minus_button").disabled = true;
 		document.getElementById("bet_red_button").disabled = true;
+		document.getElementById("bet_red_button").style.color = "grey";
 		document.getElementById("bet_blue_button").disabled = true;
+		document.getElementById("bet_blue_button").style.color = "grey";
 	}
 </script>
 </html>

@@ -8,33 +8,47 @@ ob_end_clean();
 
 <table id="currentFighterInfo" border='1' style='width:100%;border: 1px solid black;border-collapse: collapse;padding: 5px;'>
 	<tr>
-		<th colspan="4">CURRENT/NEXT FIGHT</th>
+		<th colspan="5">CURRENT/NEXT FIGHT</th>
 	</tr>
 	<tr>
-		<th colspan="2">Red / Odds</th>
-		<th colspan="2">Blue / Odds</th>
+		<th colspan="5">
+			<div style="width:50%; float:left;">
+				<font color="red">Red</font> / Odds(Payout)
+			</div>
+			<div style="width:50%; float:right;">
+				<font color="blue">Blue</font> / Odds(Payout)
+			</div>
+		</th>
 	</tr>
 	<tr>
-		<td width="25%" align="center"><?php echo $current_red_fighter; ?></td>
-		<td width="25%" align="center"><?php echo number_format($current_red_odds,2); ?></td>
-		<td width="25%" align="center"><?php echo $current_blue_fighter; ?></td>
-		<td width="25%" align="center"><?php echo number_format($current_blue_odds,2); ?></td>
+		<td width="20%" align="center"><?php echo $current_red_fighter; ?></td>
+		<td width="20%" align="center"><?php echo (number_format($current_red_odds,2)+0); ?></td>
+		<td width="20%" align="center"><?php if($current_red_odds > $current_blue_odds){echo '<font color="red">' . (number_format($current_red_odds/$current_blue_odds,2)+0) . '</font>:<font color="blue">1';}else {echo '<font color="red">1</font>:<font color="blue">' . (number_format($current_blue_odds/$current_red_odds,2)+0) . '</font>';} ?></td>
+		<td width="20%" align="center"><?php echo $current_blue_fighter; ?></td>
+		<td width="20%" align="center"><?php echo (number_format($current_blue_odds,2)+0); ?></td>
 	</tr>
 </table>
 </br>
 <table id="lastFighterInfo" border='1' style='width:100%;border: 1px solid black;border-collapse: collapse;padding: 5px;'>
 	<tr>
-		<th colspan="4">LAST FIGHT</th>
+		<th colspan="5">LAST FIGHT</th>
 	</tr>
 	<tr>
-		<th colspan="2"><div id="last_red_header">Red / Odds</div></th>
-		<th colspan="2"><div id="last_blue_header">Blue / Odds</div></th>
+		<th colspan="5">
+			<div style="width:50%; float:left;">
+				<font color="red">Red</font> / Odds(Payout)
+			</div>
+			<div style="width:50%; float:right;">
+				<font color="blue">Blue</font> / Odds(Payout)
+			</div>
+		</th>
 	</tr>
 	<tr>
-		<td width="25%" align="center"><?php echo $last_red_fighter; ?></td>
-		<td width="25%" align="center"><?php echo number_format($last_red_odds,2); ?></td>
-		<td width="25%" align="center"><?php echo $last_blue_fighter; ?></td>
-		<td width="25%" align="center"><?php echo number_format($last_blue_odds,2); ?></td>
+		<td width="20%" align="center"><?php echo $last_red_fighter; ?></td>
+		<td width="20%" align="center"><?php if($last_red_odds != ""){echo (number_format($last_red_odds,2)+0);} ?></td>
+		<td width="20%" align="center"><?php if($last_red_odds != ""){if($last_red_odds > $last_blue_odds){echo '<font color="red">' . (number_format($last_red_odds/$last_blue_odds,2)+0) . '</font>:<font color="blue">1';}else {echo '<font color="red">1</font>:<font color="blue">' . (number_format($last_blue_odds/$last_red_odds,2)+0) . '</font>';}} ?></td>
+		<td width="20%" align="center"><?php echo $last_blue_fighter; ?></td>
+		<td width="20%" align="center"><?php if($last_red_odds != ""){echo (number_format($last_blue_odds,2)+0);} ?></td>
 	</tr>
 </table>
 </br>
