@@ -97,8 +97,8 @@ if (!$db) {
 
 	//Reset bets and odds to 1 at the start of betting
 	if($next_video_type_id == 1) {
-		$red_bet = "1";
-		$blue_bet = "1";
+		$red_bet = "10";
+		$blue_bet = "10";
 		$red_odds = "1";
 		$blue_odds = "1";
 	} else {
