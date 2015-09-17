@@ -110,7 +110,7 @@ include 'functions/loadUserAndCurrentData.php';
 		<td colspan="4" align="center" style="padding: 100px">
 			<button id="plus_button" onclick="decreaseBet()" style="padding: 15px 50px 15px 50px">-</button>
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-			<input type="number" id="bet" value=5 style="width:150px;">
+			<input type="number" id="bet" value=<?php if($betAmount != ""){echo $betAmount;}else{echo 5;} ?> style="width:150px;">
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 			<button id="minus_button" onclick="increaseBet()" style="padding: 15px 50px 15px 50px">+</button>
 		</td>
@@ -173,11 +173,12 @@ include 'functions/loadUserAndCurrentData.php';
 			document.getElementById("bet_blue_button").disabled = true;
 			updatePayout();
 			
-			setInterval(function(){
+			//Dont need to show how long the fight is
+			/* setInterval(function(){
 				current_time = parseInt((new Date).getTime() / 1000, 10);
 				time_left = (length - (current_time - start_time));
 				document.getElementById("wait_div").innerHTML = "Time left: " + time_left + " seconds";
-			}, 1000);
+			}, 1000); */
 		}
 	} else {
 		//Error (video paused and I am off sync or end of all videos)
