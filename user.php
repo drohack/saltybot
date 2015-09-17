@@ -22,16 +22,18 @@ include 'functions/loadUserAndCurrentData.php';
 		}
 	}
 	function updatePayout(){
-		var redPayout = document.getElementById("bet").value * <?php echo $current_red_odds; ?>;
-		var bluePayout = document.getElementById("bet").value * <?php echo $current_blue_odds; ?>;
-		document.getElementById("redPayout").innerHTML = "($" + Math.ceil(redPayout) + ")";
-		document.getElementById("bluePayout").innerHTML = "($" + Math.ceil(bluePayout) + ")";
+		if(document.getElementById("bet").disabled == false){
+			var redPayout = document.getElementById("bet").value * <?php echo $current_red_odds; ?>;
+			var bluePayout = document.getElementById("bet").value * <?php echo $current_blue_odds; ?>;
+			document.getElementById("redPayout").innerHTML = "($" + Math.ceil(redPayout) + ")";
+			document.getElementById("bluePayout").innerHTML = "($" + Math.ceil(bluePayout) + ")";
+		}
 	}
 </script>
 
 <script type='text/javascript'>
 	function bet(side) {
-		document.getElementById("bet").readOnly = true;
+		document.getElementById("bet").disabled = true;
 		document.getElementById("plus_button").disabled = true;
 		document.getElementById("minus_button").disabled = true;
 		document.getElementById("bet_red_button").disabled = true;
@@ -59,10 +61,9 @@ include 'functions/loadUserAndCurrentData.php';
 		return false;
 	}
 	function refreshInfo() {
-		jQuery('#userInfo').load(document.URL +  ' #userInfo', function() {
-			jQuery('#bettingInfo').load(document.URL +  ' #bettingInfo', function(){
-				updatePayout();
-			});
+		jQuery('#userInfo').load(document.URL +  ' #userInfo');
+		jQuery('#bettingInfo').load(document.URL +  ' #bettingInfo', function() {
+			updatePayout();
 		});
 		return false;
 	}
@@ -98,9 +99,9 @@ include 'functions/loadUserAndCurrentData.php';
 	</tr>
 	<tr>
 		<td width="25%" align="center"><?php echo $current_red_fighter; ?></td>
-		<td width="25%" align="center"><?php echo number_format($current_red_odds,2); ?><span id="redPayout"/></td>
+		<td width="25%" align="center"><?php echo number_format($current_red_odds,2); ?><span id="redPayout"><?php if($betAmount != ""){echo '($' . ceil(($betAmount * $current_red_odds)) . ')';} ?></span></td>
 		<td width="25%" align="center"><?php echo $current_blue_fighter; ?></td>
-		<td width="25%" align="center"><?php echo number_format($current_blue_odds,2); ?><span id="bluePayout"/></td>
+		<td width="25%" align="center"><?php echo number_format($current_blue_odds,2); ?><span id="bluePayout"><?php if($betAmount != ""){echo '($' . ceil(($betAmount * $current_blue_odds)) . ')';} ?></span></td>
 	</tr>
 </table>
 
@@ -137,28 +138,35 @@ include 'functions/loadUserAndCurrentData.php';
 			
 			// Betting time so enable bet buttons (if not already bet)
 			if("<?php echo $betAmount; ?>" == "") {
-				document.getElementById("bet").readOnly = false;
+				document.getElementById("bet").disabled = false;
 				document.getElementById("plus_button").disabled = false;
 				document.getElementById("minus_button").disabled = false;
 				document.getElementById("bet_red_button").disabled = false;
 				document.getElementById("bet_blue_button").disabled = false;
 			} else {
-				document.getElementById("bet").readOnly = true;
+				document.getElementById("bet").disabled = true;
 				document.getElementById("plus_button").disabled = true;
 				document.getElementById("minus_button").disabled = true;
 				document.getElementById("bet_red_button").disabled = true;
 				document.getElementById("bet_blue_button").disabled = true;
 			}
 
+			var time_elapsed = (current_time - start_time);
+			var count_down = 10 - (time_elapsed % 10);
 			setInterval(function(){
 				loadData();
 				current_time = parseInt((new Date).getTime() / 1000, 10);
 				time_left = (length - (current_time - start_time));
-				document.getElementById("wait_div").innerHTML = "Time left: " + time_left + " seconds";
+				if(count_down == 1) {
+					count_down = 10;
+				} else {
+					count_down = count_down - 1;
+				}
+				document.getElementById("wait_div").innerHTML = "Time left: " + time_left + " seconds </br> Next odds update in: " + count_down + " seconds";
 			}, 1000);
 		} else {
 			// Not betting time so disable bet buttons
-			document.getElementById("bet").readOnly = true;
+			document.getElementById("bet").disabled = true;
 			document.getElementById("plus_button").disabled = true;
 			document.getElementById("minus_button").disabled = true;
 			document.getElementById("bet_red_button").disabled = true;
@@ -175,7 +183,7 @@ include 'functions/loadUserAndCurrentData.php';
 		//Error (video paused and I am off sync or end of all videos)
 		document.getElementById("wait_div").innerHTML = "Error finding video. Please refresh this page when video has resumed playing.";
 		// Not betting time so disable bet buttons
-		document.getElementById("bet").readOnly = true;
+		document.getElementById("bet").disabled = true;
 		document.getElementById("plus_button").disabled = true;
 		document.getElementById("minus_button").disabled = true;
 		document.getElementById("bet_red_button").disabled = true;
