@@ -1,29 +1,27 @@
 <?php 
-//database server 
-define('db_server', 'localhost'); 
-
 //user, password, and database variables 
+$db_server = 'localhost';
 $db_user = 'dro'; 
 $db_password = 'password';     
 $db_dbname = 'saltybet'; 
 
-//connect to the database server 
-$db = mysql_connect(db_server, $db_user, $db_password); 
-if (!$db) { 
-   die('Could Not Connect: ' . mysql_error()); 
-} else {
-	//select database name 
-	mysql_select_db($db_dbname); 
+try {
+	//connect to the database server 
+	$conn = new PDO("mysql:host=$db_server;dbname=$db_dbname", $db_user, $db_password);
+	// set the PDO error mode to exception
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 	//run query and output results 
 	//run a select query 
-	$users_query = 'SELECT username, saltyBucks, betAmount, betSide, odds, wins, gamesPlayed FROM users ORDER BY (wins/IF(gamesPlayed = 0, 1, gamesPlayed)) desc'; 
-	$users_result = mysql_query($users_query); 
+	$users_query = $conn->prepare('SELECT username, saltyBucks, betAmount, betSide, odds, wins, gamesPlayed FROM users ORDER BY (wins/IF(gamesPlayed = 0, 1, gamesPlayed)) desc');
+	$users_query->execute();
 	
-	$red_fighter_query = 'SELECT red_fighter FROM current_video WHERE id=1;';
-	$red_fighter_result = mysql_query($red_fighter_query);
-	$red_fighter_row = mysql_fetch_array($red_fighter_result);
-	$this_red_fighter = $red_fighter_row['red_fighter'];
+	$red_fighter_query = $conn->prepare('SELECT red_fighter FROM current_video WHERE id=1;');
+	$red_fighter_query->execute();
+	$red_fighter_row = $red_fighter_query->fetch();
+	if($red_fighter_row) {
+		$this_red_fighter = $red_fighter_row['red_fighter'];
+	}
 
 	//output data in a table 
 	echo "<table border='1' style='width:100%;border: 1px solid black;border-collapse: collapse;padding: 5px;'\n"; 
@@ -34,7 +32,7 @@ if (!$db) {
 	echo "<th>Bet Side</th>\n";
 	echo "<th>Odds</th>\n";
 	echo "<th>Win Rate</th>\n";
-	while ($row = mysql_fetch_array($users_result)){
+	while ($row = $users_query->fetch()){
 		$winRate = "";
 		if($row['wins'] != "" && $row['gamesPlayed'] != "") {
 			$winRate = $row['wins'] / $row['gamesPlayed'] * 100;
@@ -59,8 +57,14 @@ if (!$db) {
 		echo "</tr>\n"; 
 	} 
 	echo '</table>';
+} catch(PDOException $e) {
+    echo "Connection failed: " . $e->getMessage();
+} finally {
+	//close database connection 
+	$conn = null;
+	$users_query = null;
+	$red_fighter_query = null;
+	$row = null;
+	$red_fighter_row = null;
 }
-
-//close database connection 
-mysql_close($db) 
 ?>

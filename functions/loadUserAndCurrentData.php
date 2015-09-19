@@ -1,26 +1,21 @@
 <?php 
-//database server 
-define('db_server', 'localhost'); 
-
 //user, password, and database variables 
+$db_server = 'localhost';
 $db_user = 'dro'; 
 $db_password = 'password';     
 $db_dbname = 'saltybet'; 
 
-//connect to the database server 
-$db = mysql_connect(db_server, $db_user, $db_password); 
-if (!$db) { 
-    die('Could Not Connect: ' . mysql_error()); 
-} else {  
-	//select database name 
-	mysql_select_db($db_dbname); 
+try {
+	//connect to the database server 
+	$conn = new PDO("mysql:host=$db_server;dbname=$db_dbname", $db_user, $db_password);
+	// set the PDO error mode to exception
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 	// Get user data
-	$user_query = 'SELECT uniqueId, username, saltyBucks, betAmount, betSide, odds, wins, gamesPlayed FROM users WHERE uniqueId=\'' . $_COOKIE['uniqueID'] . '\';'; 
-	$user_result = mysql_query($user_query); 
-	
-	while ($row = mysql_fetch_array($user_result)) 
-	{
+	$sth = $conn->prepare('SELECT uniqueId, username, saltyBucks, betAmount, betSide, odds, wins, gamesPlayed FROM users WHERE uniqueId=\'' . $_COOKIE['uniqueID'] . '\';');
+	$sth->execute();
+	$row = $sth->fetch();
+	if($row) {
 		$uniqueId = $row['uniqueId'];
 		$username = $row['username'];
 		$saltyBucks = $row['saltyBucks'];
@@ -41,11 +36,15 @@ if (!$db) {
 		}
 	}
 	
+	//clear sth & row	
+	$sth = null;
+	$row = null;
+	
 	// Get current video data
-	$current_video_query = 'SELECT video_id, file_name, video_type_id, length, start_time, red_fighter, blue_fighter, red_odds, blue_odds  FROM current_video;'; 
-	$current_video_result = mysql_query($current_video_query); 
-	while ($row = mysql_fetch_array($current_video_result)) 
-	{
+	$sth = $conn->prepare('SELECT video_id, file_name, video_type_id, length, start_time, red_fighter, blue_fighter, red_odds, blue_odds  FROM current_video;');
+	$sth->execute();
+	$row = $sth->fetch();
+	if($row) {
 		$current_video_id = $row['video_id'];
 		$current_file_name = $row['file_name'];
 		$current_video_type_id = $row['video_type_id'];
@@ -56,8 +55,12 @@ if (!$db) {
 		$current_red_odds = $row['red_odds'];
 		$current_blue_odds = $row['blue_odds'];
 	}
+} catch(PDOException $e) {
+    echo "Connection failed: " . $e->getMessage();
+} finally {
+	//close database connection 
+	$conn = null;
+	$sth = null;
+	$row = null;
 }
-
-//close database connection 
-mysql_close($db);
 ?>

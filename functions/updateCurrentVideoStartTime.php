@@ -1,25 +1,24 @@
 <?php 
-//database server 
-define('db_server', 'localhost'); 
-
 //user, password, and database variables 
+$db_server = 'localhost';
 $db_user = 'dro'; 
 $db_password = 'password';     
 $db_dbname = 'saltybet'; 
 
-//connect to the database server 
-$db = mysql_connect(db_server, $db_user, $db_password); 
-if (!$db) { 
-   die('Could Not Connect: ' . mysql_error()); 
-} else {
-	//select database name 
-	mysql_select_db($db_dbname); 
+try {
+	//connect to the database server 
+	$conn = new PDO("mysql:host=$db_server;dbname=$db_dbname", $db_user, $db_password);
+	// set the PDO error mode to exception
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 	
 	//save the next video data as the current video
-	$update_current_video_query = "UPDATE current_video SET start_time=" . time() . " WHERE id=1;"; 
-	mysql_query($update_current_video_query);
+	$sth = $conn->prepare("UPDATE current_video SET start_time=" . time() . " WHERE id=1;");
+	$sth->execute();
+} catch(PDOException $e) {
+    echo "Connection failed: " . $e->getMessage();
+} finally {
+	//close database connection 
+	$conn = null;
+	$sth = null;
 }
-
-//close database connection 
-mysql_close($db) 
 ?>
