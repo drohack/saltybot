@@ -77,18 +77,18 @@ include 'functions/loadUserAndCurrentData.php';
 <!-- output data in a table -->
 <table id="userInfo" border='1' style='width:100%;border: 1px solid black;border-collapse: collapse;padding: 5px;'>
 	<tr>
-		<th>Salty Bucks</th>
+		<th>Total</br>$</th>
 		<th>Bet On</th>
-		<th>Bet Amount</th>
-		<th>Odds(Payout)</th>
-		<th>Win Rate</th>
+		<th>Bet</th>
+		<th>Odds</br>(Payout)</th>
+		<th>Win</br>Rate</th>
 	</tr>
 	<tr>
 		<td width="20%" align="center"><?php echo $saltyBucks; ?></td>
-		<td width="20%" align="center"><?php if($betSide == $current_red_fighter){echo '<font color="red">' . $betSide . '</font>';}else{echo '<font color="blue">' . $betSide . '</font>';} ?></td>
+		<td width="20%" align="center" style="word-wrap: break-word;"><?php if($betSide == $current_red_fighter){echo '<font color="red">' . $betSide . '</font>';}else{echo '<font color="blue">' . $betSide . '</font>';} ?></td>
 		<td width="20%" align="center"><?php echo $betAmount; ?></td>
-		<td width="20%" align="center"><?php echo (number_format($odds,2)+0); ?>x ($<?php echo $payout; ?>)</td>
-		<td width="20%" align="center"><?php echo $winRate; ?>%</td>
+		<td width="20%" align="center"><?php echo (number_format($odds,2)+0); ?>x ($<?php echo ceil($payout); ?>)</td>
+		<td width="20%" align="center"><?php echo round($winRate); ?>%</td>
 	</tr>
 </table>
 
@@ -97,21 +97,24 @@ include 'functions/loadUserAndCurrentData.php';
 <strong>Who's Fighting</strong> <div id="wait_div"></div>
 <table id="bettingInfo" border='1' style='width:100%;border: 1px solid black;border-collapse: collapse;padding: 5px;'>
 	<tr>
-		<th colspan="5">
-			<div style="width:50%; float:left;">
-				<font color="red">Red</font> / Odds(Payout)
-			</div>
-			<div style="width:50%; float:right;">
-				<font color="blue">Blue</font> / Odds(Payout)
-			</div>
+		<th colspan="1">
+			<font color="red">Red</font>
+		</th>
+		<td align="center">
+			Odds
+		</td>
+		<th colspan="1">
+			<font color="blue">Blue</font>
 		</th>
 	</tr>
 	<tr>
-		<td width="20%" align="center"><?php echo $current_red_fighter; ?></td>
-		<td width="20%" align="center"><?php echo (number_format($current_red_odds,2)+0); ?><span id="redPayout"><?php if($betAmount != ""){echo '($' . ceil(($betAmount * $current_red_odds)) . ')';} ?></span></td>
-		<td width="20%" align="center"><?php if($current_red_odds > $current_blue_odds){echo '<font color="red">' . (number_format($current_red_odds/$current_blue_odds,2)+0) . '</font>:<font color="blue">1';}else {echo '<font color="red">1</font>:<font color="blue">' . (number_format($current_blue_odds/$current_red_odds,2)+0) . '</font>';} ?></td>
-		<td width="20%" align="center"><?php echo $current_blue_fighter; ?></td>
-		<td width="20%" align="center"><?php echo (number_format($current_blue_odds,2)+0); ?><span id="bluePayout"><?php if($betAmount != ""){echo '($' . ceil(($betAmount * $current_blue_odds)) . ')';} ?></span></td>
+		<td width="40%" align="center" style="word-wrap: break-word;"><?php echo $current_red_fighter; ?></td>
+		<td width="20%" align="center" rowspan="2"><?php if($current_red_odds > $current_blue_odds){echo '<font color="red">' . (number_format($current_red_odds/$current_blue_odds,2)+0) . '</font>:<font color="blue">1';}else {echo '<font color="red">1</font>:<font color="blue">' . (number_format($current_blue_odds/$current_red_odds,2)+0) . '</font>';} ?></td>
+		<td width="40%" align="center" style="word-wrap: break-word;"><?php echo $current_blue_fighter; ?></td>
+	</tr>
+	<tr>
+		<td width="40%" align="center"><?php echo (number_format($current_red_odds,2)+0) . 'x'; ?><span id="redPayout"><?php if($betAmount != ""){echo '($' . ceil(($betAmount * $current_red_odds)) . ')';} ?></span></td>
+		<td width="40%" align="center"><?php echo (number_format($current_blue_odds,2)+0) . 'x'; ?><span id="bluePayout"><?php if($betAmount != ""){echo '($' . ceil(($betAmount * $current_blue_odds)) . ')';} ?></span></td>
 	</tr>
 </table>
 
@@ -166,7 +169,7 @@ include 'functions/loadUserAndCurrentData.php';
 			}
 
 			var time_elapsed = (current_time - start_time);
-			var count_down = 10 - (time_elapsed % 10);
+			var count_down = 11 - (time_elapsed % 10);
 			setInterval(function(){
 				loadData();
 				current_time = parseInt((new Date).getTime() / 1000, 10);
