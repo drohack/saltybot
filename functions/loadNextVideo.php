@@ -88,7 +88,7 @@ try {
 	
 	
 	//get the next video data
-	$sth = $conn->prepare('SELECT id, file_name, video_type_id, red_fighter, blue_fighter, winner, length FROM videos WHERE id=' . ($current_video_id + 1) . ';');
+	$sth = $conn->prepare('SELECT id, file_name, video_type_id, red_fighter, blue_fighter, winner FROM videos WHERE id=' . ($current_video_id + 1) . ';');
 	$sth->execute();
 	$row = $sth->fetch();
 	if($row) {
@@ -98,7 +98,6 @@ try {
 		$next_red_fighter = $row['red_fighter'];
 		$next_blue_fighter = $row['blue_fighter'];
 		$next_winner = $row['winner'];
-		$next_length = $row['length'];
 	} else {
 		throw new Exception("No next video found");
 	}
@@ -106,6 +105,15 @@ try {
 	//clear sth & row
 	$sth = null;
 	$row = null;
+	
+	// include getID3() library (can be in a different directory if full path is specified) 
+	require_once('getid3/getid3.php'); 
+	// Initialize getID3 engine 
+	$getID3 = new getID3; 
+	// Get next video's length wigh getID3
+	$DirectoryToScan = '../videos/' . $next_file_name; 
+	$file = $getID3->analyze($DirectoryToScan); 
+	$next_length = round($file['playtime_seconds']);
 
 	//Reset bets and odds to 1 at the start of betting
 	if($next_video_type_id == 1) {
