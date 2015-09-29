@@ -35,10 +35,10 @@ ob_end_clean();
 	</tr>
 	<tr>
 		<th colspan="5">
-			<div style="width:50%; float:left;">
+			<div id="last_red_header" style="width:50%; float:left;">
 				<font color="red">Red</font> / Odds(Payout)
 			</div>
-			<div style="width:50%; float:right;">
+			<div id="last_blue_header" style="width:50%; float:right;">
 				<font color="blue">Blue</font> / Odds(Payout)
 			</div>
 		</th>
@@ -93,9 +93,9 @@ ob_end_clean();
 			var last_blue_fighter = "<?php echo $last_blue_fighter ?>";
 			//alert("test: " + last_winner + ":" + last_red_fighter);
 			if(last_winner != "" && last_red_fighter != "" && last_winner == last_red_fighter) {
-				document.getElementById("last_red_header").innerHTML = "Red / Odds - WINNER";
+				document.getElementById("last_red_header").innerHTML = "<font color='red'>Red</font> / Odds - <font color='orange'>WINNER</font>";
 			} else if(last_winner != "" && last_blue_fighter != "" && last_winner == last_blue_fighter) {
-				document.getElementById("last_blue_header").innerHTML = "Blue / Odds - WINNER";
+				document.getElementById("last_blue_header").innerHTML = "<font color='blue'>Blue</font> / Odds - <font color='orange'>WINNER</font>";
 			}
 		});
 		start();
