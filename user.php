@@ -86,7 +86,7 @@ include 'functions/loadUserAndCurrentData.php';
 	</tr>
 	<tr>
 		<td width="20%" align="center"><?php echo $saltyBucks; ?></td>
-		<td width="20%" align="center" style="display: inline-block; word-break: break-all;"><?php if($betSide == $current_red_fighter){echo '<font color="red">' . $betSide . '</font>';}else{echo '<font color="blue">' . $betSide . '</font>';} ?></td>
+		<td width="20%" align="center" style="display: inline-block, -mox-inline-stack; word-break: break-all;"><?php if($betSide == $current_red_fighter){echo '<font color="red">' . $betSide . '</font>';}else{echo '<font color="blue">' . $betSide . '</font>';} ?></td>
 		<td width="20%" align="center"><?php echo $betAmount; ?></td>
 		<td width="20%" align="center"><?php echo (number_format($odds,2)+0); ?>x ($<?php echo ceil($payout); ?>)</td>
 		<td width="20%" align="center"><?php echo round($winRate); ?>%</td>
@@ -109,9 +109,9 @@ include 'functions/loadUserAndCurrentData.php';
 		</th>
 	</tr>
 	<tr>
-		<td width="40%" align="center" style="display: inline-block; word-break: break-all;"><?php echo $current_red_fighter; ?></td>
+		<td width="40%" align="center" style="display: inline-block, -moz-inline-stack; word-break: break-all;"><?php echo $current_red_fighter; ?></td>
 		<td width="20%" align="center" rowspan="2"><?php if($current_red_odds > $current_blue_odds){echo '<font color="red">' . (number_format($current_red_odds/$current_blue_odds,2)+0) . '</font>:<font color="blue">1';}else {echo '<font color="red">1</font>:<font color="blue">' . (number_format($current_blue_odds/$current_red_odds,2)+0) . '</font>';} ?></td>
-		<td width="40%" align="center" style="display: inline-block; word-break: break-all;"><?php echo $current_blue_fighter; ?></td>
+		<td width="40%" align="center" style="display: inline-block, -mox-inline-stack; word-break: break-all;"><?php echo $current_blue_fighter; ?></td>
 	</tr>
 	<tr>
 		<td width="40%" align="center"><?php echo (number_format($current_red_odds,2)+0) . 'x'; ?><span id="redPayout"><?php if($betAmount != ""){echo '($' . ceil(($betAmount * $current_red_odds)) . ')';} ?></span></td>
