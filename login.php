@@ -7,16 +7,13 @@ if($_POST){
 }
 
 function login() {
-	//make sure user inputted a username
+	//make sure user inputted a username	
 	if(isset($_POST['username']) && $_POST['username'] != "") {
 		if(!isset($_COOKIE['uniqueID'])) {
 			//If no cookie is found on device add cookie
 			$expire=time()+60*60*24*30;//however long you want (current expires in 30 days)
 			setcookie('uniqueID', uniqid(), $expire);
 		}
-		
-		$username = $_POST['username'];
-		echo 'username: ' . $username . '</br>';
 		
 		//database server 
 		define('db_server', 'localhost'); 
@@ -31,6 +28,11 @@ function login() {
 		if ($db) { 
 			//select database name 
 			mysql_select_db($db_dbname); 
+			
+			//escape any unwanted sql injection
+			$username = $_POST['username'];
+			$username = mysql_real_escape_string($username);
+			echo 'username: ' . $username . '</br>';
 
 			//check to see if user exists
 			$user_exists_query = 'SELECT * FROM users WHERE username=\'' . $username . '\';';
@@ -56,7 +58,7 @@ function login() {
 				echo 'Device is already registered';
 				
 				//Redirect back to test.php
-				header("Location: user.php");
+				//header("Location: user.php");
 				die();
 			} else if(mysql_num_rows($user_exists)!=0) {
 				echo 'Username already exists';

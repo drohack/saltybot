@@ -50,6 +50,11 @@ try {
 		$sth = $conn->prepare('SELECT * FROM users WHERE betAmount IS NOT null AND betSide IS NOT null AND odds IS NOT null;');
 		$sth->execute();
 		while ($user = $sth->fetch()) {
+			//Save all users that bet into the user_logs table
+			$sth2 = $conn->prepare('INSERT INTO user_logs (user_id, video_id, betAmount, betSide, odds) VALUES (' . $user['id'] . ', ' . $current_video_id . ', ' . $user['betAmount'] . ', \'' . $user['betSide'] . '\', ' . $user['odds'] . ');');
+			$sth2->execute();
+			$sth2 = null;
+			
 			$saltyBucks = $user['saltyBucks'];
 			if($user['wins'] == "") {
 				$wins = 0;
@@ -76,9 +81,9 @@ try {
 			}
 			
 			//Update user
-			$sth2 = $conn->prepare('UPDATE users SET saltyBucks=' . $saltyBucks . ' , betAmount=null, betSide=null, odds=null, wins=' . $wins . ', gamesPlayed=' . $gamesPlayed . ' WHERE uniqueId=\'' . $user['uniqueId'] . '\';');
-			$sth2->execute();
-			$sth2 = null;
+			$sth3 = $conn->prepare('UPDATE users SET saltyBucks=' . $saltyBucks . ' , betAmount=null, betSide=null, odds=null, wins=' . $wins . ', gamesPlayed=' . $gamesPlayed . ' WHERE uniqueId=\'' . $user['uniqueId'] . '\';');
+			$sth3->execute();
+			$sth3 = null;
 		}
 		
 		//clear sth & user
