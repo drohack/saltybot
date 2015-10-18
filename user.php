@@ -139,9 +139,16 @@ include 'functions/loadUserAndCurrentData.php';
     //This is run onLoad.
 	//Take the current time minus the start time of the video and subtract that from the length of video and reload the whole page at the end of that time.
 	var length = <?php echo $current_length; ?>;
+	var server_time = <?php echo time(); ?>;
 	var current_time = parseInt((new Date).getTime() / 1000, 10);
+	var time_difference;
+	if(server_time > current_time) {
+		time_difference = server_time - current_time;
+	} else {
+		time_difference = current_time - server_time;
+	}
 	var start_time = <?php echo $current_start_time; ?>;
-	var wait_time = ((length - (current_time - start_time)) * 1000) + 2000;
+	var wait_time = ((length - (current_time - time_difference - start_time)) * 1000) + 2000;
 	
 	if(wait_time > 0) {
 		// Refresh the whole page after the wait_time
@@ -169,12 +176,12 @@ include 'functions/loadUserAndCurrentData.php';
 				document.getElementById("bet_blue_button").style.color = "grey";
 			}
 
-			var time_elapsed = (current_time - start_time);
+			var time_elapsed = (current_time - time_difference - start_time);
 			var count_down = 11 - (time_elapsed % 10);
 			setInterval(function(){
 				loadData();
 				current_time = parseInt((new Date).getTime() / 1000, 10);
-				time_left = (length - (current_time - start_time));
+				time_left = (length - (current_time - time_difference - start_time));
 				if(count_down == 1) {
 					count_down = 10;
 				} else {
