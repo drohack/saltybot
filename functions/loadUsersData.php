@@ -54,6 +54,7 @@ try {
 		
 		//Check to see if there was previously a fight. And if the user previously bet on that fight.
 		$previously_bet = 0;
+		$previously_won = null;
 		if($last_winner != null && $last_winner != "" && $last_bet_side != null && $last_bet_side != "") {
 			//If the user bet correctly last fight then add a big green plus next to their name
 			//Else add a big red minus next to their name
@@ -61,7 +62,7 @@ try {
 			if($last_winner == $last_bet_side) {
 				$previously_won = 1;
 			} else {
-				$previously_lost = 0;
+				$previously_won = 0;
 			}
 		}
 		
@@ -80,7 +81,7 @@ try {
 			$formatted_odds =(number_format($row['odds'],2)+0);
 		}
 		echo "<tr>\n"; 
-			echo "<td>" . $row['username'] . "</td>\n"; 
+			echo "<td>" . $row['username'] . $last_winner . $last_bet_side . "</td>\n"; 
 			echo "<td>";
 			if($previously_bet == 1) {
 				if($previously_won == 1) {
