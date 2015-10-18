@@ -81,7 +81,7 @@ try {
 			$formatted_odds =(number_format($row['odds'],2)+0);
 		}
 		echo "<tr>\n"; 
-			echo "<td>" . $row['username'] . $last_winner . $last_bet_side . "</td>\n"; 
+			echo "<td>" . $row['username'] . "</td>\n"; 
 			echo "<td>";
 			if($previously_bet == 1) {
 				if($previously_won == 1) {
